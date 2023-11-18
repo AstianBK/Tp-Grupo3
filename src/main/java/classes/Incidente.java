@@ -105,6 +105,7 @@ public class Incidente {
 
     public void finalizado(){
         this.fechaAproxDeFinalizacion=LocalDateTime.now();
+        this.setEstadoActual(State.TERMINADO);
     }
 
     public void setCliente(Cliente cliente) {
@@ -113,6 +114,16 @@ public class Incidente {
 
     public void setOperador(Operador operador) {
         this.operador = operador;
+    }
+
+    public void messageState(){
+        System.out.print("ID:"+this.getId()+
+                "\nFecha de inicio:"+this.getFechaDeInicio()+
+                "\nFecha aprox de finalizacion:"+this.getFechaAproxDeFinalizacion()+
+                "\nTecnico asignado:"+this.getTecnicoAsignado().getName()+
+                "\nCliente:"+this.getCliente().getName()+
+                "\nDescripsion:"+this.getDescripcion()+
+                "\nEstado actual:"+this.getEstadoActual().name());
     }
 
     public enum State{

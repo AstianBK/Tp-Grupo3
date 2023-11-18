@@ -34,7 +34,7 @@ public class TecManager {
     public List<Tecnico> mostrarTecnicosDisponibles(List<Especialidad> especialidades){
         List<Tecnico> tecnicos1=this.tecnicos.values().stream().filter(e->e.estaLibre() && e.estaCapacitadoParaElTrabajo(especialidades)).collect(Collectors.toList());
         for (Tecnico tecnico:tecnicos1){
-            System.out.print("\n"+tecnico.getName()+"-\t-"+tecnico.getId()+"\n");
+            System.out.print("\n|Nombre:"+tecnico.getName()+"\t||\tId:"+tecnico.getId()+"|\n");
         }
         return tecnicos1;
     }
@@ -43,10 +43,7 @@ public class TecManager {
         return tecnicos.get(id);
     }
     public boolean existeTecnico(int id,List<Tecnico> tecnicos1){
-        if(id<0){
-            return false;
-        }
-        return buscarPorId(id)==null && tecnicos1.contains(buscarPorId(id));
+        return buscarPorId(id)!=null && tecnicos1.contains(buscarPorId(id));
     }
 
 }

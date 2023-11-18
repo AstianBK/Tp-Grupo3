@@ -15,7 +15,7 @@ public class Tecnico extends Usuario {
 
     private Disponibilidad disponibilidad=Disponibilidad.LIBRE;
 
-    Tecnico(int id, String name) {
+    public Tecnico(int id, String name) {
         super(id, name);
     }
     public boolean estaLibre(){

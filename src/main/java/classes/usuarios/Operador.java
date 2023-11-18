@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Operador extends Usuario{
-    Operador(int id, String name) {
+    public Operador(int id, String name) {
         super(id, name);
     }
 
@@ -18,6 +18,7 @@ public class Operador extends Usuario{
         Tecnico tecnico=manager.buscarTecnico(scanner,especialidades);
         if(tecnico!=null){
             incidente.setTecnicoAsignado(tecnico);
+            incidente.setEstadoActual(Incidente.State.EMPEZADO);
             tecnico.addIncidentes(incidente);
         }
         return incidente;
@@ -32,6 +33,7 @@ public class Operador extends Usuario{
         incidente.setFechaAproxDeFinalizacion(fechaAproximadaDeFinalizacion);
         incidente.setEspecialidadesPorList(especialidades);
         incidente.setEstadoActual(Incidente.State.EN_BUSCA);
+        incidente.setDescripcion(descri);
         return incidente;
     }
 }

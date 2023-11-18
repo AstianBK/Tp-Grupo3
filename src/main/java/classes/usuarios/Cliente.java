@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Cliente extends Usuario {
-    private final int cuit;
+    private final String cuit;
     private final String razonSocial;
     private Servicios serviciosContratados=new Servicios(new ArrayList<>());
 
-    Cliente(int id, String name,int cuit,String razonSocial) {
+    public Cliente(int id, String name, String cuit, String razonSocial) {
         super(id, name);
         this.cuit=cuit;
         this.razonSocial=razonSocial;
@@ -30,7 +30,7 @@ public class Cliente extends Usuario {
         this.serviciosContratados.DarDeBajaServicioSiExiste(servicio);
     }
 
-    public int getCuit() {
+    public String getCuit() {
         return cuit;
     }
 
