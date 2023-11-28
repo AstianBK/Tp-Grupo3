@@ -10,16 +10,16 @@ public class Comercial {
         this.manager=manager;
     }
     public void agregarServicioACliente(int id, Servicio servicio){
-        this.manager.clientes.get(id).addServicio(servicio);
+        this.manager.dao.findOne(id,Cliente.class).addServicio(servicio);
     }
     public void darDeBajaUnServicio(int id,Servicio servicio){
-        this.manager.clientes.get(id).darBajaServicio(servicio);
+        this.manager.dao.findOne(id,Cliente.class).darBajaServicio(servicio);
     }
     public void agregarCliente(Cliente cliente){
-        this.manager.clientes.put(cliente.getId(),cliente);
+        this.manager.dao.create(cliente);
     }
 
     public void removeCliente(int id){
-        this.manager.clientes.remove(id);
+        this.manager.dao.delete(manager.dao.findOne(id, Cliente.class));
     }
 }

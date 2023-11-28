@@ -1,119 +1,68 @@
 package classes;
 
 import classes.atributos.Especialidad;
-import classes.atributos.Especialidades;
+import classes.atributos.Servicio;
 import classes.usuarios.*;
+import lombok.Data;
 
+import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Incidente {
-    private static final Incidente NO_INCIDENTE=new Incidente();
+@Entity
+@Table(name = "INCIDENTE")
+@Data
+public class Incidente implements Serializable {
+    @Id
+    @Column(name = "id_incidente")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(name = "descripcion")
     private String descripcion;
+
+    @Column(name = "estado")
+    @Enumerated(value = EnumType.STRING)
     private State estadoActual=State.EN_ESPERA;
+
+    @Column(name = "fecha_de_inicio")
     private LocalDateTime fechaDeInicio;
+
+    @Column(name = "fecha_de_finalizacion")
     private LocalDateTime fechaDeFinalizacion;
+
+    @Column(name = "fecha_aprox_de_finalizacion")
     private LocalDateTime fechaAproxDeFinalizacion;
+
+    @ManyToOne
+    @JoinColumn(name="id_tecnico", referencedColumnName="id_tecnico")
     private Tecnico tecnicoAsignado;
+
+    @Column(name = "cliente")
+    @JoinColumn(name = "id_cliente",referencedColumnName = "id_cliente")
     private Cliente cliente;
-    private Operador operador;
-    private Especialidades especialidades=new Especialidades(new ArrayList<>());
+
+    @Column(name = "id_servicio")
+    @JoinColumn(name = "id_servicio",referencedColumnName = "id_servicio")
+    private Servicio servicio;
+
+    @Column(name = "especialidades")
+    @ElementCollection
+    private List<Especialidad> especialidades=new ArrayList<>();
 
     public Incidente(){
-    }
 
-    public void setFechaDeInicio(LocalDateTime fechaDeInicio) {
-        this.fechaDeInicio = fechaDeInicio;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public Especialidades getEspecialidades() {
-        return especialidades;
-    }
-
-    public State getEstadoActual() {
-        return estadoActual;
-    }
-
-    public Operador getOperador() {
-        return operador;
-    }
-
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public Tecnico getTecnicoAsignado() {
-        return tecnicoAsignado;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setEspecialidades(Especialidades especialidades) {
-        this.especialidades = especialidades;
-    }
-    public void setEspecialidadesPorList(List<Especialidad> especialidades){
-        this.especialidades=new Especialidades(especialidades);
     }
 
     public void addEspecialidad(Especialidad especialidad){
-        this.especialidades.agregarEspecialidadesSiNoExiste(especialidad);
-    }
-
-    public void setEstadoActual(State estadoActual) {
-        this.estadoActual = estadoActual;
-    }
-
-    public void setFechaDeFinalizacion(LocalDateTime fechaDeFinalizacion) {
-        this.fechaDeFinalizacion = fechaDeFinalizacion;
-    }
-
-    public LocalDateTime getFechaDeFinalizacion() {
-        return fechaDeFinalizacion;
-    }
-
-    public LocalDateTime getFechaDeInicio() {
-        return fechaDeInicio;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setTecnicoAsignado(Tecnico tecnicoAsignado) {
-        this.tecnicoAsignado = tecnicoAsignado;
-    }
-
-    public void setFechaAproxDeFinalizacion(LocalDateTime fechaAproxDeFinalizacion) {
-        this.fechaAproxDeFinalizacion = fechaAproxDeFinalizacion;
-    }
-
-    public LocalDateTime getFechaAproxDeFinalizacion() {
-        return fechaAproxDeFinalizacion;
+        this.especialidades.add(especialidad);
     }
 
     public void finalizado(){
         this.fechaAproxDeFinalizacion=LocalDateTime.now();
         this.setEstadoActual(State.TERMINADO);
-    }
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
-
-    public void setOperador(Operador operador) {
-        this.operador = operador;
     }
 
     public void messageState(){
@@ -127,10 +76,17 @@ public class Incidente {
     }
 
     public enum State{
-        EMPEZADO,
-        TERMINADO,
-        EN_PROCESO,
-        EN_ESPERA,
-        EN_BUSCA;
+        EMPEZADO("EMPEZADO"),
+        TERMINADO("TERMINADO"),
+        EN_ESPERA("EN ESPERA"),
+        EN_BUSCA("EN BUSCA");
+        public String name;
+        State(String name){
+            this.name=name;
+        }
+
+        public String getName() {
+            return name;
+        }
     }
 }

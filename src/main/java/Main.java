@@ -1,10 +1,12 @@
+import classes.ControllerDB;
 import classes.Incidente;
-import classes.atributos.Especialidad;
 import classes.manager.ClientManager;
+import classes.manager.DaoManager;
+import classes.manager.IncidenteManager;
 import classes.manager.TecManager;
 import classes.usuarios.Cliente;
 import classes.usuarios.Operador;
-import classes.usuarios.Tecnico;
+import util.Util;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -13,33 +15,27 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         int cc = 0;
-        Map<Integer,Tecnico> tecnicos=new HashMap<>();
-        Map<Integer, Cliente> clientes=new HashMap<>();
-        List<Especialidad> especialidades=new ArrayList<>();
-        especialidades.add(Especialidad.WINDOWS);
-        especialidades.add(Especialidad.LINUX);
-        Tecnico tecnico=new Tecnico(0,"Martin");
-        tecnico.setEspecialidades(especialidades);
-        Cliente cliente=new Cliente(1,"Nicole","20435344534","PepiIn");
-        tecnicos.put(tecnico.getId(),tecnico);
-        clientes.put(cliente.getId(),cliente);
-        TecManager manager=new TecManager(tecnicos);
-        ClientManager clientManager=new ClientManager(clientes);
-        Operador operador=new Operador(2,"Pepito");
+        TecManager manager= DaoManager.getTecManager();
+        ClientManager clientManager=DaoManager.getClientManager();
+        IncidenteManager incidenteManager=DaoManager.getIncidenteManager();
+        ControllerDB.inicializarTecnicos(manager);
+        Cliente cliente=new Cliente("Walter");
+        clientManager.dao.create(cliente);
+
+        Operador operador=new Operador();
         System.out.print("¿Hola en que puedo ayudarlo?");
-        do{
-            System.out.print("Seleccione 1 - si desea reportar un incidente " +
-                    "\n 2 - si desea dar de baja algun servicio " +
-                    "\n 3 - si desea contratar un nuevo servicios");
-            if(scanner.hasNext()){
-                cc=scanner.nextInt();
-            }
-        }while (cc<=0 || cc>3);
+        cc=Util.mostrarMsjYCargarDatos(0,4,"Seleccione 1 - si desea reportar un incidente " +
+                "\n 2 - si desea dar de baja algun servicio " +
+                "\n 3 - si desea contratar un nuevo servicios\n"
+                ,scanner);
+
         switch (cc){
             case 1:{
-                Incidente incidente = operador.inciar(0, LocalDateTime.of(2023,12,7,14,2),cliente,especialidades,"pepe",scanner,manager);
+                Incidente incidente = operador.inciar( LocalDateTime.of(2023,new Random().nextInt(1,6),new Random().nextInt(1,28),14,2),cliente,new ArrayList<>(),"pepe",scanner,manager);
                 if (incidente!=null){
                     System.out.print("\nIncidente creado\n");
+                    incidenteManager.save(incidente);
+                    manager.dao.update(incidente.getTecnicoAsignado());
                     incidente.messageState();
                 }
             }
@@ -50,5 +46,12 @@ public class Main {
                 //sin iniciar
             }
         }
+        int cc1=Util.mostrarMsjYCargarDatos(0,4,"1 - Si eres de RRHH" +
+                "\n 2 - Si eres Tecnico \n 3 - Si perteneces al Area Comercial \n 4 - Si eres Cliente"
+                ,scanner);
+
+
+
     }
+
 }

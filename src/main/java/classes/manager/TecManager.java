@@ -1,18 +1,17 @@
 package classes.manager;
 
 import classes.atributos.Especialidad;
+import classes.dao.TecnicoDao;
 import classes.usuarios.Tecnico;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 public class TecManager {
-    public Map<Integer,Tecnico> tecnicos;
+    public TecnicoDao<Tecnico> dao;
 
-    public TecManager(Map<Integer, Tecnico> tecnicoMap){
-        this.tecnicos=tecnicoMap;
+    public TecManager(){
+        this.dao=new TecnicoDao<>();
     }
 
     public Tecnico buscarTecnico(Scanner scanner, List<Especialidad> especialidades){
@@ -28,22 +27,45 @@ public class TecManager {
         }else {
             System.out.print("\n No hay tecnicos disponibles o capacitados para solucionar el incidente.");
         }
-        return id==-1 ? null  : buscarPorId(id);
+        return id==-1 ? null  : dao.findOne(id,Tecnico.class);
     }
 
     public List<Tecnico> mostrarTecnicosDisponibles(List<Especialidad> especialidades){
-        List<Tecnico> tecnicos1=this.tecnicos.values().stream().filter(e->e.estaLibre() && e.estaCapacitadoParaElTrabajo(especialidades)).collect(Collectors.toList());
+        List<Tecnico> tecnicos1=dao.findTecnicosForDisponibilidad(Tecnico.class,especialidades);
         for (Tecnico tecnico:tecnicos1){
             System.out.print("\n|Nombre:"+tecnico.getName()+"\t||\tId:"+tecnico.getId()+"|\n");
         }
         return tecnicos1;
     }
 
-    public Tecnico buscarPorId(int id){
-        return tecnicos.get(id);
-    }
     public boolean existeTecnico(int id,List<Tecnico> tecnicos1){
-        return buscarPorId(id)!=null && tecnicos1.contains(buscarPorId(id));
+        return dao.findOne(id,Tecnico.class)!=null && tecnicos1.contains(dao.findOne(id,Tecnico.class));
+    }
+
+    public void tecConsole(int valor,Scanner scanner){
+        switch (valor){
+            case 1:{
+                int id=-1;
+                List<Tecnico> tecnicos=dao.findAll(Tecnico.class);
+                do{
+                    System.out.print("\nIngresar id del Tecnico seleccionado:");
+                    if(scanner.hasNextInt()){
+                        id=scanner.nextInt();
+                    }
+                }while (!existeTecnico(id,tecnicos));
+                Tecnico tecnico=dao.findOne(id, Tecnico.class);
+                dao.delete(tecnico);
+            }
+            case 2:{
+
+            }
+            case 3:{
+
+            }
+            case 4:{
+
+            }
+        }
     }
 
 }

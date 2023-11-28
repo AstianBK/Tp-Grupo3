@@ -2,53 +2,61 @@ package classes.usuarios;
 
 import classes.Incidente;
 import classes.atributos.Especialidad;
-import classes.atributos.Especialidades;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Tecnico extends Usuario {
-    private List<Incidente> incidentes=new ArrayList<>();
-    private Especialidades especialidades=new Especialidades(new ArrayList<>());
-    private Incidente incidenteActual=new Incidente();
+@Entity
+@Table(name = "TECNICOS")
+@Data
+@NoArgsConstructor(force = true)
+public class Tecnico implements Serializable {
+    @Id
+    @Column(name = "id_tecnico")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
+    @Column
+    private final String name;
+
+    @OneToMany
+    @Column(name = "incidentes")
+    private List<Incidente> incidentes=new ArrayList<>();
+
+    @Transient
+    private List<Especialidad> especialidades=new ArrayList<>();
+
+    @Column(name = "disponibilidad")
+    @Enumerated(value = EnumType.STRING)
     private Disponibilidad disponibilidad=Disponibilidad.LIBRE;
 
-    public Tecnico(int id, String name) {
-        super(id, name);
+    public Tecnico(String name) {
+        super();
+        this.name=name;
     }
     public boolean estaLibre(){
         return this.disponibilidad==Disponibilidad.LIBRE;
-    }
-
-    public List<Incidente> getIncidentes() {
-        return incidentes;
-    }
-
-    public Disponibilidad getDisponibilidad() {
-        return disponibilidad;
-    }
-
-    public void setDisponibilidad(Disponibilidad disponibilidad){
-        this.disponibilidad=disponibilidad;
     }
     public void addIncidentes(Incidente incidente){
         this.incidentes.add(incidente);
     }
     public void addEspecialidad(Especialidad especialidad){
-        this.especialidades.agregarEspecialidadesSiNoExiste(especialidad);
-    }
-    public void setEspecialidades(List<Especialidad> especialidades){
-        this.especialidades=new Especialidades(especialidades);
+        this.especialidades.add(especialidad);
     }
     public int getTrabajosCompletadosPorDias(int days, LocalDateTime time){
-        LocalDateTime time1=time.plusDays(days);
-        return (int) this.incidentes.stream().filter(e -> time1.isAfter(e.getFechaDeFinalizacion())).count();
+        return (int) this.incidentes.stream().filter(e -> time.isAfter(e.getFechaDeFinalizacion().plusDays(days))).count();
+    }
+    public boolean realizoTrabajoPorDias(int pDay,LocalDateTime time){
+        return getTrabajosCompletadosPorDias(pDay,time)==0;
     }
 
     public boolean estaCapacitado(Especialidad especialidad){
-        return this.especialidades.poseeEstaEspecialidad(especialidad);
+        return this.especialidades.contains(especialidad);
     }
     public boolean estaCapacitadoParaElTrabajo(List<Especialidad> especialidades){
         int i=0;
@@ -62,7 +70,15 @@ public class Tecnico extends Usuario {
     }
 
     enum Disponibilidad{
-        OCUPADO,
-        LIBRE;
+        OCUPADO("OCUPADO"),
+        LIBRE("LIBRE");
+        private String name;
+        Disponibilidad(String name){
+            this.name=name;
+        }
+
+        public String getName() {
+            return name;
+        }
     }
 }

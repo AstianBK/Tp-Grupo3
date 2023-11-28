@@ -5,13 +5,13 @@ import classes.usuarios.Tecnico;
 
 public class RRHH {
     public TecManager manager;
-    RRHH(TecManager manager){
+    public RRHH(TecManager manager){
         this.manager=manager;
     }
     public void despedirTecnico(int id){
-        manager.tecnicos.remove(id);
+        manager.dao.delete(manager.dao.findOne(id, Tecnico.class));
     }
     public void contratarTecnico(Tecnico tecnico){
-        manager.tecnicos.put(tecnico.getId(),tecnico);
+        manager.dao.create(tecnico);
     }
 }
