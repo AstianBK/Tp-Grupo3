@@ -29,12 +29,11 @@ public class Util {
             case 1:{
                 cc=Util.mostrarMsjYCargarDatos(0,4,"Seleccione 1 - si desea despedir tecnico " +
                         "\n 2 - si  quiere contratar un tecnico " +
-                        "\n 3 - si necesita modificar la planilla de un tecnico\n"+
-                        "\n 4 - si ",scanner);
-                DaoManager.getTecManager().tecConsole(valor,scanner);
+                        "\n 3 - ver Ranking de trabajadores por N dias\n"+
+                        "\n 4 - ver Ranking de trabajadores por especialidad ",scanner);
+                DaoManager.getTecManager().tecConsole(cc,scanner);
             }
             case 2:{
-                cc=
             }
         }
         return cc;

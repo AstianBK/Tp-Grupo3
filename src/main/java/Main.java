@@ -49,8 +49,7 @@ public class Main {
         int cc1=Util.mostrarMsjYCargarDatos(0,4,"1 - Si eres de RRHH" +
                 "\n 2 - Si eres Tecnico \n 3 - Si perteneces al Area Comercial \n 4 - Si eres Cliente"
                 ,scanner);
-
-
+        Util.console(cc1,scanner);
 
     }
 

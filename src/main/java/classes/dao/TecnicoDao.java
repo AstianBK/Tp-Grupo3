@@ -20,4 +20,9 @@ public class TecnicoDao <T extends Tecnico> extends ObjectAbstractDao<T>{
                 .collect(Collectors.toList());
         return list;
     }
+    public List<T> findRankingForEspecialidad(Class<T> tClass,Especialidad especialidad){
+        List<T> list=findAll(tClass).stream().filter(
+                e->e.realizoTrabajoConEsaEspecialidad(especialidad)).toList();
+        return list;
+    }
 }

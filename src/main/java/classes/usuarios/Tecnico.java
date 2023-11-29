@@ -49,10 +49,24 @@ public class Tecnico implements Serializable {
         this.especialidades.add(especialidad);
     }
     public int getTrabajosCompletadosPorDias(int days, LocalDateTime time){
-        return (int) this.incidentes.stream().filter(e -> time.isAfter(e.getFechaDeFinalizacion().plusDays(days))).count();
+        return (int) this.incidentes.stream().filter(e ->e.getFechaDeFinalizacion()!=null && time.isAfter( e.getFechaDeFinalizacion().plusDays(days))).count();
     }
     public boolean realizoTrabajoPorDias(int pDay,LocalDateTime time){
-        return getTrabajosCompletadosPorDias(pDay,time)==0;
+        return getTrabajosCompletadosPorDias(pDay,time)!=0;
+    }
+
+    public boolean realizoTrabajoConEsaEspecialidad(Especialidad especialidad){
+        return getTrabajosCompletadosPorEspecialidad(especialidad)!=0;
+    }
+    public int getTrabajosCompletadosPorEspecialidad(Especialidad especialidad){
+        return (int) this.incidentes.stream().filter(e ->{
+            for (Especialidad especialidad1 : e.getEspecialidades()){
+                if(especialidad1.getName().equals(especialidad.getName())){
+                    return true;
+                }
+            }
+            return false;
+        }).count();
     }
 
     public boolean estaCapacitado(Especialidad especialidad){
